@@ -1,0 +1,21 @@
+NORMAL CALCULATOR
+    add, subtract, multiply, divide
+    exponents
+    pi
+    
+    trig?
+    parentheses?
+
+MACHINIST SPECIFIC
+    Feeds and Speeds for:
+        Drilling
+        Profiling
+        Slotting
+            different materials
+            HSS vs Carbide
+    
+    SFM to RPM and IPM
+
+    Thread data
+    Drill size for taps
+    

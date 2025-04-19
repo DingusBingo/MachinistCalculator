@@ -1,0 +1,21 @@
+formula.py
+    formula class
+        add
+        subtract
+        multiply
+        divide
+
+
+calculator.py
+    button class
+    calculator class
+        operation
+        output
+
+
+machining.py
+    conversions
+    speeds & feeds
+    materials
+    thread data
+    tap drill
