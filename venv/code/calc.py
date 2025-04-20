@@ -13,21 +13,20 @@ class Calculator():
         self._result_string.set("0")
         self._raw_result = ""
         self._raw_buffer = ""
+        self._current_expression = ""
         self._output_buffer = self._create_output_buffer(root)
         self._result = self._create_result(root)
         self._decimal_active = False
+        self._decision_after_equal = False
 
 
         self._create_buttons(root)
 
 #   CREATION
-    def _create_calc(self, root):
-        pass
-
     def _create_buttons(self, root):
         self._create_numbers(root)
         self._create_operators(root)
-        self._create_misc_functions(root)
+        self._create_mach_functions(root)
 
     def _create_numbers(self, root):
         self._button7 = self._seven_button(root)
@@ -48,13 +47,15 @@ class Calculator():
         self._buttonminus = self._minus_button(root)
         self._buttonplus = self._plus_button(root)
         self._buttonequal = self._equal_button(root)
+        self._buttonclear = self._clear_button(root)
+        self._buttonsquare = self._square_button(root)
+        self._buttonback = self._back_button(root)
 
-    def _create_misc_functions(self, root):
-        pass
+    def _create_mach_functions(self, root):
+        self._buttondrillcalc = self._drill_calc_button(root)
 
     def _create_output_buffer(self, root):
         return tk.Label(root, textvariable=self._output_string, font=tkfont.Font(name="Terminal", size=36)).grid(row=0, column=0, padx=5, pady=5, columnspan=self._num_cols, sticky=tk.NW)
-        
     
     def _create_result(self, root):
         return tk.Label(root, textvariable=self._result_string, font=tkfont.Font(name="Terminal", size=50)).grid(row=1, column=0, padx=5, pady=5, columnspan=self._num_cols, rowspan=2, sticky=tk.E)
@@ -107,37 +108,86 @@ class Calculator():
         return tk.Button(root, text="+", command=lambda: self._calc_button_pressed("+"), font=tkfont.Font(name="Terminal", size=30)).grid(row=8, column=3, padx=2, pady=2, sticky=tk.NSEW)
 
     def _equal_button(self, root):
-        return tk.Button(root, text="=", command=lambda: self._calc_button_pressed("="), font=tkfont.Font(name="Terminal", size=30)).grid(row=8, column=2, padx=2, pady=2, sticky=tk.NSEW)
+        return tk.Button(root, text="=", command=lambda: self._equal(), font=tkfont.Font(name="Terminal", size=30)).grid(row=8, column=2, padx=2, pady=2, sticky=tk.NSEW)
+
+    def _clear_button(self, root):
+        return tk.Button(root, text="CLR", command=lambda: self._clear(), font=tkfont.Font(name="Terminal", size=25)).grid(row=4, column=0, padx=2, pady=2, sticky=tk.NSEW)
+
+    def _square_button(self, root):
+        return tk.Button(root, text="SQR", command=lambda: self._calc_button_pressed("square"), font=tkfont.Font(name="Terminal", size=25)).grid(row=4, column=1, padx=2, pady=2, sticky=tk.NSEW)
+
+    def _back_button(self, root):
+        return tk.Button(root, text="DEL", command=lambda: self._backspace(), font=tkfont.Font(name="Terminal", size=25)).grid(row=4, column=3, padx=2, pady=2, sticky=tk.NSEW)
+
+#   MACHINING BUTTONS
+    def _drill_calc_button(self, root):
+        return tk.Button(root, text="Drill Calc", command=lambda: self._on_drill_calc_pressed(), font=tkfont.Font(name="Terminal", size= 12)).grid(row=3, column=0, padx=2, pady=2, sticky=tk.NSEW)
+
+
+
+
+
+
+
+
+
+
+
+#   MACHINING FUNCTIONS
+    def _on_drill_calc_pressed(self):
+        pass
+
+
 
 #   CALCULATION
     def _calc_button_pressed(self, button_val):
         if isinstance(button_val, int):
+            if self._decision_after_equal:
+                self._clear()
+            self._current_expression = f"{self._current_expression}{button_val}"
             self._raw_buffer = f"{self._raw_buffer}{button_val}"
             self._output_string.set(self._raw_buffer)
             return
         elif button_val == ".":
             if not self._decimal_active:
                 self._decimal_active = True
+                self._current_expression = f"{self._current_expression}{button_val}"
                 self._raw_buffer = f"{self._raw_buffer}{button_val}"
                 self._output_string.set(self._raw_buffer)
             return
         elif button_val == "/" or "*" or "-" or "+":
+            if self._decision_after_equal:
+                self._raw_buffer = f"{self._raw_result}"
+                self._output_string.set(self._raw_buffer)
             self._decimal_active = False
+            self._current_expression = f"{self._current_expression} {button_val}"
             self._raw_buffer = f"{self._raw_buffer} {button_val} "
             self._output_string.set(self._raw_buffer)
             return
-        elif button_val == "backspace":
-            pass
-        elif button_val == "clear":
-            pass
-        elif button_val == "=":
-            pass
-        
-        
-        
-        
 
+#   new_string = my_string[:-1]
+        
+#   MISC FUNCTIONS
+    def _backspace(self):
+        new_expression = self._current_expression[:-1]
+        new_buffer = self._raw_buffer[:-1]
+        self._current_expression = new_expression
+        self._raw_buffer = new_buffer
+        self._output_string.set(self._raw_buffer)
+        
+    def _clear(self):
+        self._current_expression = ""
+        self._raw_buffer = ""
+        self._output_string.set(self._raw_buffer)
+        self._raw_result = ""
+        self._result_string.set(self._raw_result)
 
+    def _equal(self):
+        self._raw_result = eval(self._current_expression)
+        self._current_expression = f"{self._raw_result}"
+        self._raw_buffer = f"{self._raw_buffer} = "
+        self._result_string.set(self._raw_result)
+        self._output_string.set(self._raw_buffer)
 
 
 
